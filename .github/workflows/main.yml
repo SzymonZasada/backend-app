@@ -45,4 +45,5 @@ jobs:
         script: |
           cd /var/www/main-backend
           tar -xzf build.tar.gz
+          pm2 start dist/main.js --name main-backend-app || pm2 restart main-backend-app
           
