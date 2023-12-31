@@ -2,45 +2,27 @@ name: Deploy Nest.js App
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Deploy to server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd /var/www/main-backend/backend-app
-            git fetch --all
-            # Use 'expect' to handle Git credentials if requested
-            expect -c "
-              spawn git reset --hard origin/master
-              expect {
-                \"Username for 'https://github.com':\" {
-                  send \"${{ secrets.USERNAME }}\r\"
-                  exp_continue
-                }
-                \"Password for 'https://${{ secrets.USERNAME }}@github.com':\" {
-                  send \"${{ secrets.PASSWORD }}\r\"
-                  exp_continue
-                }
-                \"Already up to date.\" {
-                  exit
-                }
-                eof
-              }
-            "
-            git pull origin master
-            npm install
-            npm run build
-            pm2 reload main-backend-app || pm2 start dist/main.js --name main-backend-app
+    - name: Deploy to server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /var/www/main-backend/backend-app
+          git fetch --all https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git master
+          git reset --hard origin/master https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git master
+          git pull origin master  https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git master
+          npm install
+          npm run build
+          pm2 reload main-backend-app || pm2 start dist/main.js --name main-backend-app
