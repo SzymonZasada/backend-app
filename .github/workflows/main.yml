@@ -20,6 +20,8 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /var/www/main-backend/backend-app
+          git fetch --all
+          git reset --hard origin/master
           git pull origin master
           npm install
           npm run build
