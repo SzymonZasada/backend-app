@@ -16,8 +16,8 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /var/www/main-backend/backend-app
@@ -27,11 +27,11 @@ jobs:
               spawn git reset --hard origin/master
               expect {
                 \"Username for 'https://github.com':\" {
-                  send \"$USERNAME\r\"
+                  send \"${{ secrets.USERNAME }}\r\"
                   exp_continue
                 }
-                \"Password for 'https://$USERNAME@github.com':\" {
-                  send \"$PASSWORD\r\"
+                \"Password for 'https://${{ secrets.USERNAME }}@github.com':\" {
+                  send \"${{ secrets.PASSWORD }}\r\"
                   exp_continue
                 }
                 \"Already up to date.\" {
