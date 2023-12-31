@@ -1,4 +1,4 @@
-name: Build and Deploy Next.js App
+name: Build and Deploy Nest.js App
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
       run: npm run build
 
     - name: Archive build artifacts
-      run: tar -czf build.tar.gz .next
+      run: tar -czf build.tar.gz .dist
 
     - name: Copy build to server
       uses: appleboy/scp-action@master
