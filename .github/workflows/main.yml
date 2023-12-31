@@ -20,9 +20,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /var/www/main-backend/backend-app
-          git fetch --all https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git master
-          git reset --hard origin/master https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git master
-          git pull origin master  https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git master
+          git pull https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git
           npm install
           npm run build
           pm2 reload main-backend-app || pm2 start dist/main.js --name main-backend-app
