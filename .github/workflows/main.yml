@@ -2,23 +2,45 @@ name: Deploy Nest.js App
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Deploy to server
-      env:
-        GIT_AUTH: ${{ secrets.AUTH }}
-      run: |
-        cd /var/www/main-backend/backend-app
-        git fetch --all
-        git reset --hard origin/master
-        git pull origin master
-        npm install
-        npm run build
-        pm2 reload main-backend-app || pm2 start dist/main.js --name main-backend-app
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /var/www/main-backend/backend-app
+            git fetch --all
+            # Use 'expect' to handle Git credentials if requested
+            expect -c "
+              spawn git reset --hard origin/master
+              expect {
+                \"Username for 'https://github.com':\" {
+                  send \"$USERNAME\r\"
+                  exp_continue
+                }
+                \"Password for 'https://$USERNAME@github.com':\" {
+                  send \"$PASSWORD\r\"
+                  exp_continue
+                }
+                \"Already up to date.\" {
+                  exit
+                }
+                eof
+              }
+            "
+            git pull origin master
+            npm install
+            npm run build
+            pm2 reload main-backend-app || pm2 start dist/main.js --name main-backend-app
