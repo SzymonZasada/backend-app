@@ -51,7 +51,5 @@ export class AuthController {
     test(@GetCurrentUserId() userId: string,) {
         console.log(userId)
         return { xxx: 'ggg' }
-
     }
-
 }
