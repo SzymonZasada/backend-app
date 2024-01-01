@@ -20,6 +20,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /var/www/main-backend/backend-app
+          git reset --hard 
           git pull https://${{secrets.USERNAME}}:${{secrets.PASSWORD}}@github.com/SzymonZasada/backend-app.git
           npm install
           npm run build
