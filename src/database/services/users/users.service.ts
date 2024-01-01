@@ -16,7 +16,7 @@ export class UsersService {
         const userIdExists = await this.userModel.findOne({ userId: user.userId });
 
         if (userExists || userIdExists) {
-            throw new ConflictException('Email already exists');
+            throw new ConflictException('Email od Id already exists');
         }
 
         const newUser = new this.userModel(user);
@@ -34,7 +34,7 @@ export class UsersService {
         return user
     }
 
-    async findUserById(userId: string): Promise<Users> {
+    async findUserById(userId: string): Promise<UserInterface> {
         const user = await this.userModel.findOne({ userId: userId });
 
         if (!user) {
@@ -44,7 +44,7 @@ export class UsersService {
         return user
     }
 
-    async updateRefreshToken(userId: string, refreshToken: string | null): Promise<Users> {
+    async updateRefreshToken(userId: string, refreshToken: string | null): Promise<UserInterface> {
         const user = await this.userModel.findOneAndUpdate(
             { userId: userId },
             { refreshToken: refreshToken },

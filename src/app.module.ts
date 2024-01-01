@@ -7,7 +7,7 @@ import { AccessTokenGuard } from './common/guards/access_token.guard';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost:27017/motor-expert'), DatabaseModule, AuthModule],
+  imports: [MongooseModule.forRoot('mongodb://localhost:27017/backend'), DatabaseModule, AuthModule],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
 })

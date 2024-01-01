@@ -15,7 +15,7 @@ export class AuthController {
     @Public()
     @Post('/register')
     @HttpCode(HttpStatus.CREATED)
-    register(@Body() dto: AuthDto) {
+    register(@Body() dto: AuthDto): Promise<void> {
         return this.authService.register(dto)
     }
 
@@ -30,7 +30,7 @@ export class AuthController {
 
     @Post('/logout')
     @HttpCode(HttpStatus.OK)
-    logout(@GetCurrentUserId() userId: string,) {
+    logout(@GetCurrentUserId() userId: string,): Promise<void> {
         return this.authService.logout(userId)
     }
 

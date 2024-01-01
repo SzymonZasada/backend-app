@@ -11,7 +11,7 @@ export class AuthService {
 
     constructor(private usersService: UsersService, private jwtService: JwtService) { }
 
-    async register(dto: AuthDto) {
+    async register(dto: AuthDto): Promise<void> {
         const hashPassword = await this.hashData(dto.password);
         const customId = uuidv4();
         const newUser = {
@@ -38,14 +38,14 @@ export class AuthService {
         return tokens
     }
 
-    async logout(userId: string) {
+    async logout(userId: string): Promise<void> {
         const updatedUser = await this.usersService.updateRefreshToken(userId, null)
         if (!updatedUser) {
             throw new ForbiddenException('Wrong user')
         }
     }
 
-    async refreshToken(userId: string, refreshToken: string) {
+    async refreshToken(userId: string, refreshToken: string): Promise<Tokens> {
         const user = await this.usersService.findUserById(userId);
         if (user.refreshToken !== refreshToken) {
             throw new ForbiddenException('Access denied')
