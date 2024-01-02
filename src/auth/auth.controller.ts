@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { ObjectId } from 'mongoose';
 import { RefrestTokenGuard } from 'src/common/guards/refresh_token.guard';
 import { GetCurrentUserId } from 'src/decorators/get-current-user-id.decorator';
 import { GetCurrentUser } from 'src/decorators/get-current-user.decorator';
@@ -30,7 +31,7 @@ export class AuthController {
 
     @Post('/logout')
     @HttpCode(HttpStatus.OK)
-    logout(@GetCurrentUserId() userId: string,): Promise<void> {
+    logout(@GetCurrentUserId() userId: ObjectId,): Promise<void> {
         return this.authService.logout(userId)
     }
 
@@ -40,7 +41,7 @@ export class AuthController {
     @Post('/refresh')
     @HttpCode(HttpStatus.OK)
     refreshToken(
-        @GetCurrentUserId() userId: string,
+        @GetCurrentUserId() userId: ObjectId,
         @GetCurrentUser('refreshToken') refreshToken: string): Promise<Tokens> {
         return this.authService.refreshToken(userId, refreshToken)
     }
@@ -48,8 +49,8 @@ export class AuthController {
 
     @Post('/test')
     @HttpCode(HttpStatus.OK)
-    test(@GetCurrentUserId() userId: string,) {
+    test(@GetCurrentUserId() userId: ObjectId,) {
         console.log(userId)
-        return { xxx: 'ggg' }
+        return { test: 'token-test' }
     }
 }

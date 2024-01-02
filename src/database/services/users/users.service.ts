@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import UserInterface from 'src/auth/types/users.interface';
 import { Users } from 'src/database/schema/users.schema';
 
@@ -13,10 +13,8 @@ export class UsersService {
     async createUser(user: UserInterface): Promise<UserInterface> {
         const userExists = await this.userModel.findOne({ email: user.email });
 
-        const userIdExists = await this.userModel.findOne({ userId: user.userId });
-
-        if (userExists || userIdExists) {
-            throw new ConflictException('Email od Id already exists');
+        if (userExists) {
+            throw new ConflictException('Email already exists');
         }
 
         const newUser = new this.userModel(user);
@@ -34,8 +32,8 @@ export class UsersService {
         return user
     }
 
-    async findUserById(userId: string): Promise<UserInterface> {
-        const user = await this.userModel.findOne({ userId: userId });
+    async findUserById(userId: ObjectId): Promise<UserInterface> {
+        const user = await this.userModel.findOne({ _id: userId });
 
         if (!user) {
             throw new ForbiddenException('User not exists')
@@ -44,9 +42,9 @@ export class UsersService {
         return user
     }
 
-    async updateRefreshToken(userId: string, refreshToken: string | null): Promise<UserInterface> {
+    async updateRefreshToken(userId: ObjectId, refreshToken: string | null): Promise<UserInterface> {
         const user = await this.userModel.findOneAndUpdate(
-            { userId: userId },
+            { _id: userId },
             { refreshToken: refreshToken },
             { new: true }
         );

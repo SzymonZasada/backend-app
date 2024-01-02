@@ -12,9 +12,6 @@ export class Users extends Document {
     @Prop({ required: true })
     password: string;
 
-    @Prop({ required: true, index: true, unique: true })
-    userId: string;
-
     @Prop()
     refreshToken?: string | null | undefined;
 }
